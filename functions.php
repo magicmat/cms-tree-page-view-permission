@@ -1583,7 +1583,11 @@ function cms_tpv_move_page() {
 	*/
 
 	global $wpdb;
-	
+
+        if ( !current_user_can( CMS_TPV_MOVE_PERMISSION ) )
+            die("Error: you dont have permission");
+
+
 	$node_id = $_POST["node_id"]; // the node that was moved
 	$ref_node_id = $_POST["ref_node_id"];
 	$type = $_POST["type"];
@@ -1752,6 +1756,60 @@ function cms_tpv_install() {
 
 	// set to current version
 	update_option('cms_tpv_version', CMS_TPV_VERSION);
+
+        // Add necessary capabilities to allow moving tree of cms_tpv
+        $roles = array(
+                'administrator' => array(CMS_TPV_MOVE_PERMISSION),
+                'editor' =>        array(CMS_TPV_MOVE_PERMISSION),
+//                'author' =>        array(CMS_TPV_MOVE_PERMISSION),
+//                'contributor' =>   array(CMS_TPV_MOVE_PERMISSION)
+        );
+
+        foreach ( $roles as $role => $caps ) {
+                add_caps_to_role( $role, $caps );
+        }
+}
+
+function cms_tpv_remove() {
+        // Remove capabilities to disallow moving tree of cms_tpv
+        $roles = array(
+                'administrator' => array(CMS_TPV_MOVE_PERMISSION),
+                'editor' =>        array(CMS_TPV_MOVE_PERMISSION),
+//                'author' =>        array(CMS_TPV_MOVE_PERMISSION),
+//                'contributor' =>   array(CMS_TPV_MOVE_PERMISSION)
+        );
+
+        foreach ( $roles as $role => $caps ) {
+                remove_caps_from_role( $role, $caps );
+        }
+}
+
+/**
+* Adds an array of capabilities to a role.
+*/
+function add_caps_to_role( $role, $caps ) {
+
+    global $wp_roles;
+
+    if ( $wp_roles->is_role( $role ) ) {
+        $role =& get_role( $role );
+        foreach ( $caps as $cap )
+            $role->add_cap( $cap );
+    }
+}
+
+/**
+* Remove an array of capabilities from role.
+*/
+function remove_caps_from_role( $role, $caps ) {
+
+    global $wp_roles;
+
+    if ( $wp_roles->is_role( $role ) ) {
+        $role =& get_role( $role );
+        foreach ( $caps as $cap )
+            $role->remove_cap( $cap );
+    }
 }
 
 // cms_tpv_install();
