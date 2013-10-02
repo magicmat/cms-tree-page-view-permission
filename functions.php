@@ -197,7 +197,7 @@ function cms_tpv_add_pages() {
 		$newpost_args = array(
 			"menu_order" => $new_menu_order,
 			"post_parent" => $post_parent_id,
-			"post_status" => $post_status,
+			"post_status" => ( ('publish' == $post_status) && !current_user_can('publish_posts') ? 'pending' : $post_status ),
 			"post_title" => $one_new_post_name,
 			"post_type" => $ref_post->post_type
 		);
@@ -1029,7 +1029,7 @@ function cms_tpv_print_common_tree_stuff($post_type = "") {
 							<div>
 								<? _e("Status", "cms-tree-page-view") ?><br>
 								<label><input type="radio" name="cms_tpv_add_status" value="draft" checked> <?php _e("Draft", "cms-tree-page-view") ?></label>
-								<label><input type="radio" name="cms_tpv_add_status" value="published"> <?php _e("Published", "cms-tree-page-view") ?></label>
+								<label><input type="radio" name="cms_tpv_add_status" value="published"> <?php current_user_can('publish_posts') ? _e("Published", "cms-tree-page-view") : _e("Submit for Review", "cms-tree-page-view") ?></label>
 							</div>
 
 							<div>
