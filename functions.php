@@ -1771,13 +1771,11 @@ function cms_tpv_install() {
         }
 }
 
-function cms_tpv_remove() {
+function cms_tpv_uninstall() {
         // Remove capabilities to disallow moving tree of cms_tpv
         $roles = array(
                 'administrator' => array(CMS_TPV_MOVE_PERMISSION),
-                'editor' =>        array(CMS_TPV_MOVE_PERMISSION),
-//                'author' =>        array(CMS_TPV_MOVE_PERMISSION),
-//                'contributor' =>   array(CMS_TPV_MOVE_PERMISSION)
+                'editor' =>        array(CMS_TPV_MOVE_PERMISSION)
         );
 
         foreach ( $roles as $role => $caps ) {
